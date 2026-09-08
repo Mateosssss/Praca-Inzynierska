@@ -69,7 +69,7 @@ Pipeline przetwarzania obrazu napisany jest od zera, bez bibliotek do wizji komp
 
 ```
 Backend/
-  Evacuation.sln
+  Evacuation.slnx
   src/
     Evacuation.AppHost/          orkiestracja Aspire
     Evacuation.ServiceDefaults/  telemetria, health checks, discovery
@@ -80,14 +80,14 @@ Backend/
   tests/
     Evacuation.Application.Tests/
 MobileApp/
-  Evacuation.Mobile.sln
+  Evacuation.Mobile.slnx
   Evacuation.Mobile/             aplikacja MAUI
 Makieta/                         makiety UI mobilki (HTML)
 ```
 
-Backend i mobilka mają osobne solucje celowo: `Evacuation.Mobile` wymaga workloadów MAUI,
-a backend buduje się na czystym SDK. Dzięki rozdzieleniu `dotnet build Backend/Evacuation.sln`
-i CI dla API nie potrzebują workloadów Androida ani iOS.
+Solucje są w formacie `.slnx` (domyślny od SDK 10). Backend i mobilka mają osobne solucje celowo:
+`Evacuation.Mobile` wymaga workloadów MAUI, a backend buduje się na czystym SDK. Dzięki rozdzieleniu
+`dotnet build Backend/Evacuation.slnx` i CI dla API nie potrzebują workloadów Androida ani iOS.
 
 Warstwa `Application` nie zna EF Core ani HTTP — algorytmy są testowalne jednostkowo na syntetycznych bitmapach generowanych w kodzie.
 
@@ -129,7 +129,7 @@ AppHost wystartuje PostgreSQL, zastosuje migracje i uruchomi API. Adres dashboar
 Testy jednostkowe:
 
 ```bash
-dotnet test Backend/Evacuation.sln
+dotnet test Backend/Evacuation.slnx
 ```
 
 Migracje EF Core wymagają narzędzia `dotnet-ef` (`dotnet tool install -g dotnet-ef`):

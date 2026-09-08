@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Evacuation.Api/Evacuation.Api.csproj" />
+    <Project Path="src/Evacuation.AppHost/Evacuation.AppHost.csproj" />
+    <Project Path="src/Evacuation.Application/Evacuation.Application.csproj" />
+    <Project Path="src/Evacuation.Domain/Evacuation.Domain.csproj" />
+    <Project Path="src/Evacuation.Infrastructure/Evacuation.Infrastructure.csproj" />
+    <Project Path="src/Evacuation.ServiceDefaults/Evacuation.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Evacuation.Application.Tests/Evacuation.Application.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -493,8 +493,9 @@ $RECYCLE.BIN/
 *.jks
 MobileApp/**/Resources/raw/generated/
 
-# Sekrety i lokalna konfiguracja (connection stringi wstrzykuje Aspire)
-appsettings.Development.json
+# Sekrety i lokalna konfiguracja.
+# appsettings.Development.json JEST wersjonowany — zawiera tylko poziomy logowania.
+# Connection stringi wstrzykuje Aspire, hasło Postgresa trzyma w user secrets AppHosta.
 appsettings.Local.json
 appsettings.*.Local.json
 *.pfx
