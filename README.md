@@ -123,6 +123,5 @@ Adres API ustawiany jest w konfiguracji projektu mobilnego. Przy emulatorze Andr
 - [ ] Aplikacja mobilna i wizualizacja trasy na planie
 - [ ] Testy wydajnościowe na dużych planach
 
-## Status
-
-Projekt w fazie implementacji. Termin złożenia pracy: luty 2027.****
+## Opiekun Pracy
+Dr. Hab. Rafał Adamczak
