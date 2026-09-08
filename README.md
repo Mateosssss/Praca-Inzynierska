@@ -2,7 +2,7 @@
 
 System wskazywania drogi ewakuacji z budynku. Aplikacja mobilna wyznacza optymalną trasę do najbliższego wyjścia ewakuacyjnego na podstawie rzutu piętra, omijając strefy oznaczone jako niebezpieczne.
 
-Projekt realizowany jako praca inżynierska — informatyka, Wydział Fizyki, Astronomii i Informatyki Stosowanej UMK w Toruniu.
+Projekt realizowany jako praca inżynierska — informatyka stosowana, Wydział Fizyki, Astronomii i Informatyki Stosowanej UMK w Toruniu.
 
 ## Jak to działa
 
