@@ -68,17 +68,26 @@ Pipeline przetwarzania obrazu napisany jest od zera, bez bibliotek do wizji komp
 ## Struktura repozytorium
 
 ```
-src/
-  Evacuation.AppHost/          orkiestracja Aspire
-  Evacuation.ServiceDefaults/  telemetria, health checks, discovery
-  Evacuation.Domain/           encje, bez zależności zewnętrznych
-  Evacuation.Application/      pipeline obrazu, budowa grafu, routing
-  Evacuation.Infrastructure/   EF Core, DbContext, migracje
-  Evacuation.Api/              kontrolery, DTO
-  Evacuation.Mobile/           aplikacja MAUI
-tests/
-  Evacuation.Application.Tests/
+Backend/
+  Evacuation.sln
+  src/
+    Evacuation.AppHost/          orkiestracja Aspire
+    Evacuation.ServiceDefaults/  telemetria, health checks, discovery
+    Evacuation.Domain/           encje, bez zależności zewnętrznych
+    Evacuation.Application/      pipeline obrazu, budowa grafu, routing
+    Evacuation.Infrastructure/   EF Core, DbContext, migracje
+    Evacuation.Api/              kontrolery, DTO
+  tests/
+    Evacuation.Application.Tests/
+MobileApp/
+  Evacuation.Mobile.sln
+  Evacuation.Mobile/             aplikacja MAUI
+Makieta/                         makiety UI mobilki (HTML)
 ```
+
+Backend i mobilka mają osobne solucje celowo: `Evacuation.Mobile` wymaga workloadów MAUI,
+a backend buduje się na czystym SDK. Dzięki rozdzieleniu `dotnet build Backend/Evacuation.sln`
+i CI dla API nie potrzebują workloadów Androida ani iOS.
 
 Warstwa `Application` nie zna EF Core ani HTTP — algorytmy są testowalne jednostkowo na syntetycznych bitmapach generowanych w kodzie.
 
@@ -94,21 +103,48 @@ Warstwa `Application` nie zna EF Core ani HTTP — algorytmy są testowalne jedn
 
 ## Uruchomienie
 
-Wymagania: .NET 9 SDK, Docker (lub Podman) dla kontenera bazy, workload Aspire.
+Wymagania: **.NET 10 SDK**, Docker (lub Podman) dla kontenera bazy. Wersja SDK jest przypięta
+w `global.json` (`10.0.300`, `rollForward: latestFeature`).
+
+Aspire **nie jest workloadem** — od .NET 9 dostarczany jest jako pakiet NuGet z szablonami
+plus opcjonalne CLI. Instalacja narzędzi (jednorazowo):
 
 ```bash
-dotnet workload install aspire
-git clone <repo>
-cd evacuation
-dotnet run --project src/Evacuation.AppHost
+dotnet new install Aspire.ProjectTemplates   # szablony aspire-apphost, aspire-servicedefaults, ...
+winget install Microsoft.Aspire              # opcjonalnie: polecenie `aspire`
 ```
+
+Backend — wszystkie polecenia z katalogu głównego repozytorium:
+
+```bash
+git clone <repo>
+cd PracaInzynierska
+dotnet run --project Backend/src/Evacuation.AppHost
+```
+
+Alternatywnie, z zainstalowanym CLI: `cd Backend && aspire run`.
 
 AppHost wystartuje PostgreSQL, zastosuje migracje i uruchomi API. Adres dashboardu pojawi się w konsoli.
 
-Aplikacja mobilna uruchamiana jest osobno — Aspire nie hostuje klientów MAUI:
+Testy jednostkowe:
 
 ```bash
-dotnet build src/Evacuation.Mobile -t:Run -f net9.0-android
+dotnet test Backend/Evacuation.sln
+```
+
+Migracje EF Core wymagają narzędzia `dotnet-ef` (`dotnet tool install -g dotnet-ef`):
+
+```bash
+dotnet ef migrations add <nazwa> \
+  --project Backend/src/Evacuation.Infrastructure \
+  --startup-project Backend/src/Evacuation.Api
+```
+
+Aplikacja mobilna uruchamiana jest osobno — Aspire nie hostuje klientów MAUI. Wymaga workloadów
+MAUI (`dotnet workload install maui-android`):
+
+```bash
+dotnet build MobileApp/Evacuation.Mobile -t:Run -f net10.0-android
 ```
 
 Adres API ustawiany jest w konfiguracji projektu mobilnego. Przy emulatorze Androida host maszyny widoczny jest pod `10.0.2.2`.
@@ -123,5 +159,6 @@ Adres API ustawiany jest w konfiguracji projektu mobilnego. Przy emulatorze Andr
 - [ ] Aplikacja mobilna i wizualizacja trasy na planie
 - [ ] Testy wydajnościowe na dużych planach
 
-## Opiekun Pracy
-Dr. Hab. Rafał Adamczak
+## Opiekun pracy
+
+dr hab. Rafał Adamczak

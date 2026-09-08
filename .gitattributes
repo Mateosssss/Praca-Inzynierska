@@ -1,0 +1,22 @@
+# Normalizacja końców linii — repozytorium rozwijane na Windows,
+# CI i kontenery bazy działają na Linuksie.
+* text=auto
+
+*.cs        text diff=csharp
+*.csproj    text
+*.sln       text eol=crlf
+*.json      text
+*.xaml      text
+*.md        text
+*.yml       text
+*.yaml      text
+*.sh        text eol=lf
+*.ps1       text eol=crlf
+Dockerfile  text eol=lf
+
+# Rzuty pięter i inne binaria — bez normalizacji
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.keystore binary
