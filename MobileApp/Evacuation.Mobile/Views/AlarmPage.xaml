@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage x:Class="Evacuation.Mobile.Views.AlarmPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Evacuation.Mobile.Models"
+             xmlns:vm="clr-namespace:Evacuation.Mobile.ViewModels"
+             x:DataType="vm:AlarmViewModel"
+             Style="{StaticResource EvPage}">
+
+    <Grid Padding="20,24" RowDefinitions="Auto,*,Auto">
+
+        <!--  Baner alarmu  -->
+        <Border Grid.Row="0"
+                BackgroundColor="{StaticResource EvDangerDeep}"
+                Padding="16,14"
+                Stroke="{StaticResource EvDanger}"
+                StrokeThickness="1">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="12" />
+            </Border.StrokeShape>
+
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                <Label Grid.Row="0"
+                       Grid.Column="0"
+                       Style="{StaticResource EvHeading}"
+                       Text="{Binding Alert.Title}" />
+
+                <Border Grid.Row="0"
+                        Grid.Column="1"
+                        BackgroundColor="{StaticResource EvDanger}"
+                        Padding="8,3"
+                        Stroke="Transparent">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="5" />
+                    </Border.StrokeShape>
+                    <Label FontSize="11"
+                           Text="{Binding Alert.Kind}"
+                           TextColor="{StaticResource EvTextPrimary}" />
+                </Border>
+
+                <Label Grid.Row="1"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="2"
+                       Margin="0,6,0,0"
+                       Style="{StaticResource EvBody}"
+                       Text="{Binding Alert.Description}"
+                       TextColor="{StaticResource EvTextPrimary}" />
+
+                <Label Grid.Row="2"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="2"
+                       Margin="0,4,0,0"
+                       Style="{StaticResource EvMuted}"
+                       Text="{Binding Alert.ReportedAtLabel}" />
+            </Grid>
+        </Border>
+
+        <ScrollView Grid.Row="1" Margin="0,16,0,0">
+            <VerticalStackLayout Spacing="14">
+
+                <!--  Porównanie z trasą sprzed zgłoszenia  -->
+                <Border IsVisible="{Binding HasPrevious}" Style="{StaticResource EvCard}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0"
+                               Style="{StaticResource EvCaps}"
+                               Text="Trasa poprzednia"
+                               VerticalOptions="Center" />
+                        <Label Grid.Column="1"
+                               Style="{StaticResource EvBody}"
+                               Text="{Binding PreviousRoute.TotalMetersLabel}"
+                               VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+
+                <!--  Nowa trasa  -->
+                <Border Style="{StaticResource EvCard}">
+                    <VerticalStackLayout Spacing="4">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0"
+                                   Style="{StaticResource EvCaps}"
+                                   Text="{Binding Route.Headline}"
+                                   VerticalOptions="Center" />
+                            <Label Grid.Column="1"
+                                   FontAttributes="Bold"
+                                   FontSize="26"
+                                   Text="{Binding Route.TotalMetersLabel}"
+                                   TextColor="{StaticResource EvAccent}" />
+                        </Grid>
+                        <Label Style="{StaticResource EvMuted}" Text="{Binding Route.ComparisonNote}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!--  Metryki przeliczenia — dlaczego trasa się zmieniła  -->
+                <Border Style="{StaticResource EvCard}">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0" Spacing="3">
+                            <Label Style="{StaticResource EvCaps}" Text="Mnożnik kosztu" />
+                            <Label Style="{StaticResource EvBody}" Text="{Binding Alert.CostMultiplier}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="3">
+                            <Label Style="{StaticResource EvCaps}" Text="Przeliczenie" />
+                            <Label Style="{StaticResource EvBody}" Text="{Binding Alert.RecalculationStats}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Route.Steps}" Spacing="8">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:RouteStep">
+                            <Grid ColumnDefinitions="28,*" ColumnSpacing="10">
+                                <Border Grid.Column="0"
+                                        BackgroundColor="{StaticResource EvAccentDeep}"
+                                        HeightRequest="26"
+                                        Stroke="Transparent"
+                                        VerticalOptions="Start"
+                                        WidthRequest="26">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="13" />
+                                    </Border.StrokeShape>
+                                    <Label FontSize="12"
+                                           HorizontalOptions="Center"
+                                           Text="{Binding Ordinal}"
+                                           TextColor="{StaticResource EvTextPrimary}"
+                                           VerticalOptions="Center" />
+                                </Border>
+                                <Label Grid.Column="1"
+                                       Style="{StaticResource EvBody}"
+                                       Text="{Binding Instruction}"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Button Grid.Row="2"
+                Margin="0,14,0,0"
+                Command="{Binding BackToStartCommand}"
+                Style="{StaticResource EvPrimaryButton}"
+                Text="Zacznij od nowa" />
+
+    </Grid>
+
+</ContentPage>

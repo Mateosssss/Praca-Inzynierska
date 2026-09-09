@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Paleta i style wyciągnięte z makiet w katalogu Makieta/.
+    Aplikacja jest jednomotywowa (ciemna) — w budynku podczas ewakuacji ekran ma być
+    czytelny i nie oślepiać, więc nie przełączamy się na jasny motyw systemowy.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:conv="clr-namespace:Evacuation.Mobile.Converters">
+
+    <conv:BoolToOpacityConverter x:Key="BoolToOpacity" />
+
+    <!--  Tła  -->
+    <Color x:Key="EvBackground">#201F1D</Color>
+    <Color x:Key="EvSurface">#2D2B2B</Color>
+    <Color x:Key="EvSurfaceAlt">#2B2827</Color>
+    <Color x:Key="EvDivider">#29FFFFFF</Color>
+
+    <!--  Akcent  -->
+    <Color x:Key="EvAccent">#E1AD66</Color>
+    <Color x:Key="EvAccentDim">#B68235</Color>
+    <Color x:Key="EvAccentDeep">#7D5411</Color>
+
+    <!--  Tekst  -->
+    <Color x:Key="EvTextPrimary">#F8F4F4</Color>
+    <Color x:Key="EvTextSecondary">#CFC9C4</Color>
+    <Color x:Key="EvTextMuted">#8A8380</Color>
+
+    <!--  Stany  -->
+    <Color x:Key="EvDanger">#A5342A</Color>
+    <Color x:Key="EvDangerDeep">#8C2B22</Color>
+    <Color x:Key="EvSuccess">#2F6B46</Color>
+    <Color x:Key="EvInfo">#5B7BA8</Color>
+
+    <!--  Kontrakt kolorów rzutu — te same wartości, które czyta backend  -->
+    <Color x:Key="EvPlanFloor">#FFFFFF</Color>
+    <Color x:Key="EvPlanWall">#000000</Color>
+    <Color x:Key="EvPlanExit">#00FF00</Color>
+    <Color x:Key="EvPlanDanger">#FF0000</Color>
+    <Color x:Key="EvPlanStairs">#0000FF</Color>
+    <Color x:Key="EvPlanStart">#FFFF00</Color>
+
+    <Style x:Key="EvPage" TargetType="ContentPage">
+        <Setter Property="BackgroundColor" Value="{StaticResource EvBackground}" />
+    </Style>
+
+    <Style x:Key="EvCard" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource EvSurface}" />
+        <Setter Property="Stroke" Value="{StaticResource EvDivider}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="Padding" Value="16,14" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="12" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="EvTitle" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource EvTextPrimary}" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontAttributes" Value="Bold" />
+    </Style>
+
+    <Style x:Key="EvHeading" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource EvTextPrimary}" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontAttributes" Value="Bold" />
+    </Style>
+
+    <Style x:Key="EvBody" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource EvTextSecondary}" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <Style x:Key="EvMuted" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource EvTextMuted}" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <!--  Nagłówki sekcji: wersaliki z rozstrzeloną literą, jak w makietach  -->
+    <Style x:Key="EvCaps" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource EvTextMuted}" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="CharacterSpacing" Value="1.6" />
+        <Setter Property="TextTransform" Value="Uppercase" />
+    </Style>
+
+    <Style x:Key="EvPrimaryButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource EvAccent}" />
+        <Setter Property="TextColor" Value="#201F1D" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="HeightRequest" Value="50" />
+        <Setter Property="CornerRadius" Value="12" />
+    </Style>
+
+    <Style x:Key="EvDangerButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource EvDanger}" />
+        <Setter Property="TextColor" Value="{StaticResource EvTextPrimary}" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="HeightRequest" Value="50" />
+        <Setter Property="CornerRadius" Value="12" />
+    </Style>
+
+    <Style x:Key="EvGhostButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{StaticResource EvAccent}" />
+        <Setter Property="BorderColor" Value="{StaticResource EvAccentDeep}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="HeightRequest" Value="46" />
+        <Setter Property="CornerRadius" Value="12" />
+    </Style>
+
+</ResourceDictionary>

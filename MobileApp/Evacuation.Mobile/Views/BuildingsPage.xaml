@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage x:Class="Evacuation.Mobile.Views.BuildingsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Evacuation.Mobile.Models"
+             xmlns:vm="clr-namespace:Evacuation.Mobile.ViewModels"
+             x:DataType="vm:BuildingsViewModel"
+             Style="{StaticResource EvPage}">
+
+    <Grid Padding="20,24" RowDefinitions="Auto,Auto,Auto,*">
+
+        <VerticalStackLayout Grid.Row="0" Spacing="2">
+            <Label Style="{StaticResource EvCaps}" Text="Ewakuacja" />
+            <Label Style="{StaticResource EvTitle}" Text="Budynki w pobliżu" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1"
+              Margin="0,16,0,0"
+              ColumnDefinitions="*,Auto"
+              VerticalOptions="Center">
+            <Label Grid.Column="0"
+                   Style="{StaticResource EvMuted}"
+                   Text="{Binding LocationLabel}"
+                   VerticalOptions="Center" />
+            <Button Grid.Column="1"
+                    Command="{Binding RefreshCommand}"
+                    HeightRequest="36"
+                    Padding="14,0"
+                    Style="{StaticResource EvGhostButton}"
+                    Text="Odśwież" />
+        </Grid>
+
+        <ActivityIndicator Grid.Row="2"
+                           Margin="0,20"
+                           Color="{StaticResource EvAccent}"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}" />
+
+        <CollectionView Grid.Row="3"
+                        Margin="0,16,0,0"
+                        ItemsSource="{Binding Buildings}"
+                        SelectionMode="None">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout ItemSpacing="12" Orientation="Vertical" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:BuildingSummary">
+                    <Border Style="{StaticResource EvCard}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BuildingsViewModel}}, Path=SelectBuildingCommand}"
+                                                  CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                            <Label Grid.Row="0"
+                                   Grid.Column="0"
+                                   Style="{StaticResource EvHeading}"
+                                   Text="{Binding Name}" />
+
+                            <Label Grid.Row="1"
+                                   Grid.Column="0"
+                                   Margin="0,3,0,0"
+                                   Style="{StaticResource EvBody}"
+                                   Text="{Binding Address}" />
+
+                            <Label Grid.Row="0"
+                                   Grid.Column="1"
+                                   HorizontalOptions="End"
+                                   Style="{StaticResource EvHeading}"
+                                   Text="{Binding DistanceLabel}"
+                                   TextColor="{StaticResource EvAccent}" />
+
+                            <Label Grid.Row="1"
+                                   Grid.Column="1"
+                                   Margin="0,3,0,0"
+                                   HorizontalOptions="End"
+                                   Style="{StaticResource EvMuted}"
+                                   Text="{Binding FloorCountLabel}" />
+
+                            <Border Grid.Row="2"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    Margin="0,12,0,0"
+                                    BackgroundColor="{StaticResource EvDangerDeep}"
+                                    HorizontalOptions="Start"
+                                    IsVisible="{Binding HasActiveAlarm}"
+                                    Padding="10,5"
+                                    Stroke="Transparent">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="6" />
+                                </Border.StrokeShape>
+                                <Label FontSize="11"
+                                       Text="{Binding AlarmNote}"
+                                       TextColor="{StaticResource EvTextPrimary}" />
+                            </Border>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

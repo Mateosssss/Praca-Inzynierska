@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage x:Class="Evacuation.Mobile.Views.StartRoomPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Evacuation.Mobile.Models"
+             xmlns:vm="clr-namespace:Evacuation.Mobile.ViewModels"
+             x:DataType="vm:StartRoomViewModel"
+             Style="{StaticResource EvPage}">
+
+    <Grid Padding="20,24" RowDefinitions="Auto,Auto,Auto,Auto,*,Auto">
+
+        <Button Grid.Row="0"
+                BorderWidth="0"
+                Command="{Binding GoBackCommand}"
+                HeightRequest="34"
+                HorizontalOptions="Start"
+                Padding="0"
+                Style="{StaticResource EvGhostButton}"
+                Text="{Binding FloorLabel, StringFormat='← {0}'}" />
+
+        <Label Grid.Row="1"
+               Margin="0,10,0,0"
+               Style="{StaticResource EvTitle}"
+               Text="Gdzie jesteś?" />
+
+        <!--  Druga zakładka to wskazanie pomieszczenia bezpośrednio na rzucie —
+              wymaga renderowania planu, co jest osobnym punktem roadmapy.  -->
+        <Grid Grid.Row="2"
+              Margin="0,16,0,0"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="8">
+            <Button Grid.Column="0"
+                    BackgroundColor="{StaticResource EvAccentDeep}"
+                    HeightRequest="40"
+                    Style="{StaticResource EvGhostButton}"
+                    Text="Lista sal" />
+            <Button Grid.Column="1"
+                    HeightRequest="40"
+                    IsEnabled="False"
+                    Style="{StaticResource EvGhostButton}"
+                    Text="Wskaż na rzucie" />
+        </Grid>
+
+        <ActivityIndicator Grid.Row="3"
+                           Margin="0,16"
+                           Color="{StaticResource EvAccent}"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}" />
+
+        <CollectionView Grid.Row="4"
+                        Margin="0,14,0,0"
+                        IsGrouped="True"
+                        ItemsSource="{Binding Groups}"
+                        SelectedItem="{Binding SelectedRoom}"
+                        SelectionMode="Single">
+
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="models:RoomGroup">
+                    <Label Margin="0,14,0,8"
+                           Style="{StaticResource EvCaps}"
+                           Text="{Binding Name}" />
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:RoomSummary">
+                    <Border Margin="0,0,0,8" Style="{StaticResource EvCard}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroupList>
+                                <VisualStateGroup Name="CommonStates">
+                                    <VisualState Name="Normal" />
+                                    <VisualState Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Property="Stroke" Value="{StaticResource EvAccent}" />
+                                            <Setter Property="BackgroundColor" Value="{StaticResource EvSurfaceAlt}" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateGroupList>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <VerticalStackLayout Spacing="3">
+                            <Label Style="{StaticResource EvHeading}" Text="{Binding Label}" />
+                            <Label Style="{StaticResource EvMuted}" Text="{Binding Detail}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Grid.Row="5"
+                Margin="0,12,0,0"
+                Command="{Binding ShowRouteCommand}"
+                IsEnabled="{Binding CanShowRoute}"
+                Style="{StaticResource EvPrimaryButton}"
+                Text="{Binding ShowRouteLabel}" />
+
+    </Grid>
+
+</ContentPage>

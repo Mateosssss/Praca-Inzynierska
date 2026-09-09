@@ -141,11 +141,24 @@ dotnet ef migrations add <nazwa> \
 ```
 
 Aplikacja mobilna uruchamiana jest osobno — Aspire nie hostuje klientów MAUI. Wymaga workloadów
-MAUI (`dotnet workload install maui-android`):
+MAUI oraz platformy Android SDK dla API 36 (workload `maui-android` nie obsługuje niższych):
 
 ```bash
+dotnet workload install maui-android maui-ios
+dotnet build MobileApp/Evacuation.Mobile -t:InstallAndroidDependencies -f net10.0-android
 dotnet build MobileApp/Evacuation.Mobile -t:Run -f net10.0-android
 ```
+
+Cel `InstallAndroidDependencies` dociąga brakujące komponenty Android SDK i wymaga akceptacji
+licencji Google — alternatywnie zainstaluj platformę android-36 przez SDK Manager.
+
+Projekt ma też TFM `net10.0-ios`, ale **wyłącznie jako kontrolę kompilacji**. `dotnet build -f net10.0-ios`
+przechodzi na Windowsie i wyłapuje błędy specyficzne dla iOS, natomiast bundle `.app` nie powstaje —
+linkowanie natywne, AOT, pakowanie i podpisywanie wymagają macOS z Xcode (wersja musi odpowiadać
+workloadowi `ios`, obecnie 26.x). Aplikacja jest rozwijana i uruchamiana na Androidzie.
+
+Ekrany odwzorowują makiety z katalogu `Makieta/`. Dopóki nie ma API, dane pochodzą
+z `MockEvacuationDataSource`; podmiana na klienta HTTP nie dotyka ViewModeli.
 
 Adres API ustawiany jest w konfiguracji projektu mobilnego. Przy emulatorze Androida host maszyny widoczny jest pod `10.0.2.2`.
 
