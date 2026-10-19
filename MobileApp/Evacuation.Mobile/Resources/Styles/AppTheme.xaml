@@ -39,6 +39,7 @@
     <Color x:Key="EvPlanDanger">#FF0000</Color>
     <Color x:Key="EvPlanStairs">#0000FF</Color>
     <Color x:Key="EvPlanStart">#FFFF00</Color>
+    <Color x:Key="EvPlanDoor">#FF00FF</Color>
 
     <Style x:Key="EvPage" TargetType="ContentPage">
         <Setter Property="BackgroundColor" Value="{StaticResource EvBackground}" />

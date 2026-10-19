@@ -6,8 +6,8 @@ Projekt realizowany jako praca inżynierska — informatyka stosowana, Wydział 
 
 ## Jak to działa
 
-1. Administrator budynku wgrywa rzuty pięter jako obrazy PNG/JPG w ustalonym kontrakcie kolorów
-2. Backend przetwarza obraz: segmentuje pomieszczenia (flood fill), wykrywa ich sąsiedztwo i buduje graf, w którym wierzchołkami są pomieszczenia, a wagami krawędzi odległości między ich centroidami
+1. Administrator budynku wgrywa rzuty pięter jako obrazy PNG w ustalonym kontrakcie kolorów, podając skalę rzutu
+2. Backend przetwarza obraz: etykietyzuje spójne obszary pomieszczeń, odczytuje sąsiedztwo z zaznaczonych drzwi i buduje graf, w którym wierzchołkami są pomieszczenia, a wagami krawędzi odległości liczone przez drzwi
 3. Użytkownik lokalizuje budynek przez GPS, wybiera piętro i pomieszczenie startowe
 4. Algorytm Dijkstry wyznacza najkrótszą trasę do dowolnego wyjścia ewakuacyjnego; strefy niebezpieczne podnoszą koszt przejścia zamiast całkowicie blokować krawędź, więc trasa przez zagrożenie pozostaje ostatecznością, a nie brakiem wyniku
 
@@ -25,6 +25,22 @@ Rzut piętra musi używać poniższych kolorów. Dzięki temu przetwarzanie spro
 | Czerwony | `#FF0000` | strefa niebezpieczna |
 | Niebieski | `#0000FF` | schody / winda |
 | Żółty | `#FFFF00` | punkt startowy |
+| Magenta | `#FF00FF` | drzwi / przejście między pomieszczeniami |
+
+Kontrakt to narożniki sześcianu RGB. Taki dobór maksymalizuje odległość między wartościami,
+więc klasyfikacja piksela jest testem równości, a nie dopasowaniem do najbliższego koloru.
+Z ośmiu narożników wolny pozostaje cyjan `#00FFFF`, zarezerwowany na przyszłe rozszerzenia.
+
+**Drzwi są obowiązkowe.** Bez nich etykietyzacja spójnych obszarów nie odtwarza topologii budynku:
+przejście narysowane jako przerwa w ścianie powoduje, że wypełnienie przez spójność przelewa się
+z sali na korytarz i całe piętro zlewa się w jeden obszar. Region magenty stykający się z dwoma
+pomieszczeniami wyznacza krawędź grafu — i tylko on.
+
+**Wymagania formatu.** Akceptowany jest wyłącznie **PNG**, z wyłączonym antyaliasingiem.
+JPEG jest stratny — `#FFFFFF` zapisuje się jako `#FEFEFE`, a krawędzie stref się rozmywają,
+co unieważnia założenie o odczycie koloru bez progowania. Rzuty w innych formatach są odrzucane
+przy wgrywaniu. Antyaliasing produkuje piksele pośrednie wzdłuż każdej krawędzi, które wypadają
+jako kolor spoza kontraktu.
 
 Pomieszczenia oznaczone jako schody łączą się z odpowiadającymi im pomieszczeniami na sąsiednich piętrach, co pozwala wyznaczać trasy międzypiętrowe.
 
@@ -63,7 +79,7 @@ Orkiestracja środowiska deweloperskiego: **.NET Aspire**. AppHost uruchamia kon
 | Przetwarzanie obrazu | własna implementacja w C# |
 | Testy | xUnit |
 
-Pipeline przetwarzania obrazu napisany jest od zera, bez bibliotek do wizji komputerowej. Zewnętrzny kod odpowiada wyłącznie za dekodowanie PNG/JPG do bitmapy.
+Pipeline przetwarzania obrazu napisany jest od zera, bez bibliotek do wizji komputerowej. Zewnętrzny kod odpowiada wyłącznie za dekodowanie PNG do bitmapy.
 
 ## Struktura repozytorium
 
@@ -96,10 +112,22 @@ Warstwa `Application` nie zna EF Core ani HTTP — algorytmy są testowalne jedn
 | Encja | Opis |
 |---|---|
 | `Building` | nazwa, adres, współrzędne geograficzne |
-| `FloorPlan` | numer piętra, obraz, wymiary |
+| `FloorPlan` | numer kondygnacji, etykieta, obraz PNG, wymiary w pikselach, skala (pikseli na metr), status przetworzenia |
 | `Room` | etykieta, centroid, flagi wyjścia i klatki schodowej |
 | `RoomEdge` | para pomieszczeń, waga krawędzi |
 | `DangerZone` | pomieszczenie, czas zgłoszenia, status |
+
+**Skala należy do rzutu, nie do budynku** — poszczególne piętra bywają skanowane w różnych
+rozdzielczościach. Bez niej wagi krawędzi pozostają w pikselach i dystans pokazywany użytkownikowi
+jest niemożliwy do wyliczenia. Przy wgrywaniu warto sprawdzić wiarygodność: przeliczona powierzchnia
+kondygnacji rzędu setek tysięcy metrów kwadratowych oznacza pomyłkę administratora o rząd wielkości.
+
+Numer kondygnacji jest liczbą ze znakiem — piwnice mają wartości ujemne. Etykieta jest osobnym polem,
+bo nie zawsze wynika z numeru: antresole oraz numeracja zaczynana od parteru albo od pierwszego piętra
+różnią się między budynkami.
+
+Status przetworzenia odróżnia rzut wgrany od rzutu, dla którego zbudowano już graf — aplikacja mobilna
+pokazuje wtedy kondygnację jako niedostępną.
 
 ## Uruchomienie
 

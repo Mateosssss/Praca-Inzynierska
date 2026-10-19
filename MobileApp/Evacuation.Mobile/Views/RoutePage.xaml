@@ -54,6 +54,10 @@
                                 <BoxView BackgroundColor="{StaticResource EvPlanStart}" CornerRadius="2" HeightRequest="12" WidthRequest="12" />
                                 <Label Style="{StaticResource EvMuted}" Text="punkt startowy" />
                             </HorizontalStackLayout>
+                            <HorizontalStackLayout Margin="0,0,14,6" Spacing="6">
+                                <BoxView BackgroundColor="{StaticResource EvPlanDoor}" CornerRadius="2" HeightRequest="12" WidthRequest="12" />
+                                <Label Style="{StaticResource EvMuted}" Text="drzwi" />
+                            </HorizontalStackLayout>
                         </FlexLayout>
                     </VerticalStackLayout>
                 </Border>
