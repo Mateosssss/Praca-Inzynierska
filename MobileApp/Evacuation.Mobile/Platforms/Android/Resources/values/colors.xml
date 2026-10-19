@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Kolory chromu systemowego Androida (pasek stanu, pasek nawigacji).
+    Zgodne z paletą z Resources/Styles/AppTheme.xaml — domyślne fiolety z szablonu MAUI
+    gryzły się z ciemnym motywem aplikacji.
+-->
 <resources>
-    <color name="colorPrimary">#512BD4</color>
-    <color name="colorPrimaryDark">#2B0B98</color>
-    <color name="colorAccent">#2B0B98</color>
+    <color name="colorPrimary">#201F1D</color>
+    <color name="colorPrimaryDark">#201F1D</color>
+    <color name="colorAccent">#E1AD66</color>
 </resources>
