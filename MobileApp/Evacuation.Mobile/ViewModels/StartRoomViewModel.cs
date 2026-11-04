@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Evacuation.Mobile.Models;
@@ -22,7 +21,7 @@ public sealed partial class StartRoomViewModel(IEvacuationDataSource source, Eva
     /// <summary>„Wyznacz trasę z sali 118” — tekst przycisku zależny od wyboru.</summary>
     public string ShowRouteLabel => SelectedRoom is null
         ? "Wybierz pomieszczenie"
-        : $"Wyznacz trasę z {Genitive(SelectedRoom.Label)}";
+        : $"Wyznacz trasę z {SelectedRoom.LabelGenitive}";
 
     public Task LoadAsync() => RunAsync(async () =>
     {
@@ -56,13 +55,4 @@ public sealed partial class StartRoomViewModel(IEvacuationDataSource source, Eva
         await Shell.Current.GoToAsync(Routes.Route);
     }
 
-    /// <summary>
-    /// „Sala 118 — wykładowa” → „sali 118”. Poza tym wzorcem zwraca etykietę bez zmian,
-    /// żeby nie produkować kalek językowych dla korytarzy i klatek schodowych.
-    /// </summary>
-    private static string Genitive(string label)
-    {
-        var match = Regex.Match(label, @"^Sala\s+(\S+)");
-        return match.Success ? $"sali {match.Groups[1].Value}" : label;
-    }
 }

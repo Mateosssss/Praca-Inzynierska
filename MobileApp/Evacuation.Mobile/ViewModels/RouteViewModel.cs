@@ -17,7 +17,7 @@ public sealed partial class RouteViewModel(IEvacuationDataSource source, Evacuat
 
     public string Title => $"{session.Floor?.Label ?? "Piętro"} — trasa ewakuacji";
 
-    public string Subtitle => session.StartRoom is { } room ? $"z {room.Label}" : string.Empty;
+    public string Subtitle => session.StartRoom is { } room ? $"z {room.LabelGenitive}" : string.Empty;
 
     public Task LoadAsync() => RunAsync(async () =>
     {

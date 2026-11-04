@@ -19,7 +19,7 @@ namespace Evacuation.Mobile.Services;
 public sealed class ApiOptions
 {
     /// <summary>Adres bazowy API wraz ze schematem i portem.</summary>
-    public string BaseAddress { get; init; } = "http://10.0.2.2:5097";
+    public string BaseAddress { get; init; } = "http://192.168.100.3:5097";
 
     /// <summary>Promień wyszukiwania budynków w metrach.</summary>
     public double SearchRadiusMeters { get; init; } = 1000;
