@@ -1,4 +1,7 @@
+using Evacuation.Application.Imaging;
+using Evacuation.Infrastructure.Imaging;
 using Evacuation.Infrastructure.Persistence;
+using Evacuation.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +12,12 @@ builder.AddServiceDefaults();
 // Nazwa "evacuationdb" odpowiada bazie zadeklarowanej w AppHost.cs. Aspire wstrzykuje pod nią
 // connection string, dokłada health check bazy i podpina ją do telemetrii.
 builder.AddNpgsqlDbContext<EvacuationDbContext>(connectionName: "evacuationdb");
+
+// Pipeline obrazu i dostęp do grafu. Dekoder jest bezstanowy, pozostałe dwa trzymają DbContext,
+// więc żyją tyle co zapytanie.
+builder.Services.AddSingleton<IPlanImageDecoder, PngPlanImageDecoder>();
+builder.Services.AddScoped<FloorPlanImporter>();
+builder.Services.AddScoped<FloorGraphLoader>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
