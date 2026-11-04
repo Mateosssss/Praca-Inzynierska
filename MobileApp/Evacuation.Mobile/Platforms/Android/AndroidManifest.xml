@@ -1,6 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true"></application>
+	<!--
+		usesCleartextTraffic jest ustawieniem DEWELOPERSKIM. Backend uruchomiony lokalnie
+		serwuje po HTTPS z certyfikatem, któremu telefon nie ufa, więc w czasie pracy nad
+		aplikacją rozmawiamy z nim po zwykłym HTTP. Przed jakimkolwiek wdrożeniem trzeba to
+		usunąć i przejść na HTTPS z prawdziwym certyfikatem — inaczej trasy ewakuacyjne
+		podróżowałyby po sieci bez szyfrowania.
+	-->
+	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true" android:usesCleartextTraffic="true"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	<!-- Wyszukiwanie budynków w pobliżu. Zgoda pobierana jest w czasie działania aplikacji. -->
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 </manifest>

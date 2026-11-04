@@ -5,10 +5,14 @@ namespace Evacuation.Mobile.Models;
 /// nadany przez flood fill — ta sama wartość, która jest wierzchołkiem w grafie.
 /// </summary>
 public sealed record RoomSummary(
+    Guid Id,
     int RegionId,
     string Label,
     string Group,
-    string Detail);
+    string Detail,
+    bool IsExit,
+    bool IsStaircase,
+    bool HasActiveDanger);
 
 /// <summary>Grupa pomieszczeń w <c>CollectionView</c> z <c>IsGrouped="True"</c>.</summary>
 public sealed class RoomGroup(string name, IEnumerable<RoomSummary> rooms) : List<RoomSummary>(rooms)

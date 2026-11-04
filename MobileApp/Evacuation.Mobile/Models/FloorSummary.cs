@@ -5,6 +5,7 @@ namespace Evacuation.Mobile.Models;
 /// że administrator nie wgrał jeszcze rzutu — pozycja jest wyszarzona i nieklikalna.
 /// </summary>
 public sealed record FloorSummary(
+    Guid Id,
     int Number,
     string Label,
     int RoomCount,

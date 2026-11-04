@@ -26,7 +26,7 @@ public sealed partial class StartRoomViewModel(IEvacuationDataSource source, Eva
 
     public Task LoadAsync() => RunAsync(async () =>
     {
-        var rooms = await source.GetRoomsAsync(session.BuildingId, session.FloorNumber);
+        var rooms = await source.GetRoomsAsync(session.FloorPlanId);
 
         Groups.Clear();
         foreach (var group in rooms.GroupBy(r => r.Group))

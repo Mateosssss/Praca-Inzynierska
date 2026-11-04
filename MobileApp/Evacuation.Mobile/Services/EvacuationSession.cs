@@ -22,7 +22,9 @@ public sealed class EvacuationSession
 
     public Guid BuildingId => Building?.Id ?? Guid.Empty;
 
-    public int FloorNumber => Floor?.Number ?? 0;
+    public Guid FloorPlanId => Floor?.Id ?? Guid.Empty;
+
+    public Guid StartRoomId => StartRoom?.Id ?? Guid.Empty;
 
     public void Reset()
     {

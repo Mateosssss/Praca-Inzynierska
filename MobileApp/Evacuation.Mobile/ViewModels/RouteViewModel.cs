@@ -21,10 +21,7 @@ public sealed partial class RouteViewModel(IEvacuationDataSource source, Evacuat
 
     public Task LoadAsync() => RunAsync(async () =>
     {
-        Route = await source.GetRouteAsync(
-            session.BuildingId,
-            session.FloorNumber,
-            session.StartRoom?.RegionId ?? 0);
+        Route = await source.GetRouteAsync(session.FloorPlanId, session.StartRoomId);
 
         session.Route = Route;
 
@@ -36,9 +33,9 @@ public sealed partial class RouteViewModel(IEvacuationDataSource source, Evacuat
     private Task ReportDangerAsync() => RunAsync(async () =>
     {
         session.Alert = await source.ReportDangerZoneAsync(
-            session.BuildingId,
-            session.FloorNumber,
-            session.StartRoom?.RegionId ?? 0);
+            session.FloorPlanId,
+            session.StartRoomId,
+            kind: "pożar");
 
         await Shell.Current.GoToAsync(Routes.Alarm);
     });

@@ -18,9 +18,32 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        // Źródło danych. Podmiana na implementację HTTP nie dotknie ViewModeli.
-        builder.Services.AddSingleton<IEvacuationDataSource, MockEvacuationDataSource>();
         builder.Services.AddSingleton<EvacuationSession>();
+
+        // Przełącznik źródła danych. Ustaw na true, żeby pracować nad samym interfejsem
+        // bez uruchamiania backendu — ekrany wypełnią się wtedy danymi z makiet.
+        var useMockData = false;
+
+        if (useMockData)
+        {
+            builder.Services.AddSingleton<IEvacuationDataSource, MockEvacuationDataSource>();
+        }
+        else
+        {
+            var api = new ApiOptions();
+
+            builder.Services.AddSingleton(api);
+
+            // Jedna instancja na całą aplikację. W aplikacji mobilnej, rozmawiającej z jednym
+            // serwerem, nie ma powodu tworzyć ich więcej ani obawiać się zmian DNS.
+            builder.Services.AddSingleton(_ => new HttpClient
+            {
+                BaseAddress = new Uri(api.BaseAddress.TrimEnd('/') + "/"),
+                Timeout = TimeSpan.FromSeconds(15),
+            });
+
+            builder.Services.AddSingleton<IEvacuationDataSource, ApiEvacuationDataSource>();
+        }
 
         builder.Services.AddTransient<BuildingsViewModel>();
         builder.Services.AddTransient<FloorsViewModel>();

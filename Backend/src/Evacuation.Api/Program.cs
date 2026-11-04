@@ -33,7 +33,13 @@ if (app.Environment.IsDevelopment())
     await ApplyMigrationsAsync(app);
 }
 
-app.UseHttpsRedirection();
+// Poza Development przekierowujemy na HTTPS. W trakcie pracy nad aplikacją mobilną nie —
+// telefon nie ufa deweloperskiemu certyfikatowi komputera, więc przekierowanie zerwałoby
+// mu połączenie, zanim zdążyłby cokolwiek pobrać.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.MapControllers();
 
