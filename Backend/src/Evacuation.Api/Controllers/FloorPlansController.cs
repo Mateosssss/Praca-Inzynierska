@@ -13,7 +13,8 @@ namespace Evacuation.Api.Controllers;
 public sealed class FloorPlansController(
     EvacuationDbContext db,
     FloorPlanImporter importer,
-    FloorGraphLoader loader) : ControllerBase
+    FloorGraphLoader loader,
+    FloorPlanLabelMapCache labelMaps) : ControllerBase
 {
     /// <summary>Wgranie rzutu kondygnacji. Przetwarza obraz i zapisuje wyliczony graf.</summary>
     [HttpPost("api/buildings/{buildingId:guid}/floors")]
@@ -139,6 +140,42 @@ public sealed class FloorPlansController(
             .ToList();
 
         return Ok(response);
+    }
+
+    /// <summary>
+    /// Pomieszczenie leżące pod wskazanym pikselem rzutu — obsługa wyboru dotknięciem planu.
+    /// </summary>
+    [HttpGet("api/floors/{floorPlanId:guid}/room-at")]
+    public async Task<ActionResult<RoomAtResponse>> RoomAt(
+        Guid floorPlanId,
+        [FromQuery] int x,
+        [FromQuery] int y,
+        CancellationToken ct)
+    {
+        var segmentation = await labelMaps.GetAsync(floorPlanId, ct);
+
+        if (segmentation is null)
+        {
+            return NotFound();
+        }
+
+        var regionId = segmentation.RegionAt(x, y);
+
+        if (regionId < 0)
+        {
+            // Ściana, drzwi albo miejsce poza planem — nie błąd, po prostu nic tam nie ma.
+            return Ok(new RoomAtResponse(null, null));
+        }
+
+        var room = await db.Rooms
+            .AsNoTracking()
+            .Where(r => r.FloorPlanId == floorPlanId && r.RegionId == regionId)
+            .Select(r => new { r.Id, r.RegionId })
+            .FirstOrDefaultAsync(ct);
+
+        return Ok(room is null
+            ? new RoomAtResponse(null, null)
+            : new RoomAtResponse(room.Id, room.RegionId));
     }
 
     /// <summary>Trasa ewakuacji z podanego pomieszczenia do najbliższego wyjścia.</summary>

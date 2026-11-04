@@ -2,12 +2,12 @@
 <ContentPage x:Class="Evacuation.Mobile.Views.RoutePage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:Evacuation.Mobile.Models"
+             xmlns:views="clr-namespace:Evacuation.Mobile.Views"
              xmlns:vm="clr-namespace:Evacuation.Mobile.ViewModels"
              x:DataType="vm:RouteViewModel"
              Style="{StaticResource EvPage}">
 
-    <Grid Padding="20,24" RowDefinitions="Auto,Auto,*,Auto">
+    <Grid Padding="20,24" RowDefinitions="Auto,Auto,*,Auto,Auto,Auto" RowSpacing="12">
 
         <Button Grid.Row="0"
                 BorderWidth="0"
@@ -18,116 +18,97 @@
                 Style="{StaticResource EvGhostButton}"
                 Text="← Pokój startowy" />
 
-        <VerticalStackLayout Grid.Row="1" Margin="0,10,0,0" Spacing="2">
+        <VerticalStackLayout Grid.Row="1" Spacing="2">
             <Label Style="{StaticResource EvTitle}" Text="{Binding Title}" />
             <Label Style="{StaticResource EvBody}" Text="{Binding Subtitle}" />
         </VerticalStackLayout>
 
-        <ScrollView Grid.Row="2" Margin="0,18,0,0">
-            <VerticalStackLayout Spacing="14">
+        <!--  Rzut z naniesioną trasą. Przesuwanie palcem, przybliżanie szczypaniem.  -->
+        <Border Grid.Row="2"
+                MinimumHeightRequest="260"
+                Padding="0"
+                Style="{StaticResource EvCard}">
+            <Grid>
+                <views:PlanMapView CurrentStepIndex="{Binding CurrentStepIndex}"
+                                   IsVisible="{Binding HasPlanImage}"
+                                   PlanImageUrl="{Binding PlanImageUrl}"
+                                   Steps="{Binding Steps}" />
+
+                <Label HorizontalOptions="Center"
+                       IsVisible="{Binding HasPlanImage, Converter={StaticResource Not}}"
+                       Margin="20"
+                       Style="{StaticResource EvMuted}"
+                       Text="Podgląd rzutu wymaga połączenia z backendem."
+                       VerticalOptions="Center" />
 
                 <ActivityIndicator Color="{StaticResource EvAccent}"
+                                   HorizontalOptions="Center"
                                    IsRunning="{Binding IsBusy}"
-                                   IsVisible="{Binding IsBusy}" />
+                                   IsVisible="{Binding IsBusy}"
+                                   VerticalOptions="Center" />
+            </Grid>
+        </Border>
 
-                <!--  Podgląd rzutu z naniesioną trasą wymaga obrazu z backendu — na razie legenda kontraktu.  -->
-                <Border Style="{StaticResource EvCard}">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Style="{StaticResource EvCaps}" Text="Trasa na rzucie" />
-                        <Label Style="{StaticResource EvMuted}"
-                               Text="Renderowanie planu z naniesioną trasą dojdzie razem z endpointem zwracającym rzut." />
+        <!--  Krokowanie po trasie  -->
+        <Border Grid.Row="3" IsVisible="{Binding HasRoute}" Style="{StaticResource EvCard}">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" RowDefinitions="Auto,Auto">
+                <Label Grid.Row="0"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="3"
+                       Style="{StaticResource EvCaps}"
+                       Text="{Binding StepCounter}" />
 
-                        <FlexLayout Margin="0,4,0,0" Wrap="Wrap">
-                            <HorizontalStackLayout Margin="0,0,14,6" Spacing="6">
-                                <BoxView BackgroundColor="{StaticResource EvPlanExit}" CornerRadius="2" HeightRequest="12" WidthRequest="12" />
-                                <Label Style="{StaticResource EvMuted}" Text="wyjście" />
-                            </HorizontalStackLayout>
-                            <HorizontalStackLayout Margin="0,0,14,6" Spacing="6">
-                                <BoxView BackgroundColor="{StaticResource EvPlanDanger}" CornerRadius="2" HeightRequest="12" WidthRequest="12" />
-                                <Label Style="{StaticResource EvMuted}" Text="strefa zagrożenia" />
-                            </HorizontalStackLayout>
-                            <HorizontalStackLayout Margin="0,0,14,6" Spacing="6">
-                                <BoxView BackgroundColor="{StaticResource EvPlanStairs}" CornerRadius="2" HeightRequest="12" WidthRequest="12" />
-                                <Label Style="{StaticResource EvMuted}" Text="schody / winda" />
-                            </HorizontalStackLayout>
-                            <HorizontalStackLayout Margin="0,0,14,6" Spacing="6">
-                                <BoxView BackgroundColor="{StaticResource EvPlanStart}" CornerRadius="2" HeightRequest="12" WidthRequest="12" />
-                                <Label Style="{StaticResource EvMuted}" Text="punkt startowy" />
-                            </HorizontalStackLayout>
-                            <HorizontalStackLayout Margin="0,0,14,6" Spacing="6">
-                                <BoxView BackgroundColor="{StaticResource EvPlanDoor}" CornerRadius="2" HeightRequest="12" WidthRequest="12" />
-                                <Label Style="{StaticResource EvMuted}" Text="drzwi" />
-                            </HorizontalStackLayout>
-                        </FlexLayout>
-                    </VerticalStackLayout>
-                </Border>
+                <Button Grid.Row="1"
+                        Grid.Column="0"
+                        Command="{Binding PreviousStepCommand}"
+                        HeightRequest="42"
+                        Style="{StaticResource EvGhostButton}"
+                        Text="‹"
+                        WidthRequest="52" />
 
-                <Border IsVisible="{Binding HasRoute}" Style="{StaticResource EvCard}">
-                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                        <Label Grid.Row="0"
-                               Grid.Column="0"
-                               Style="{StaticResource EvCaps}"
-                               Text="{Binding Route.Headline}" />
-                        <Label Grid.Row="1"
-                               Grid.Column="0"
-                               Margin="0,4,0,0"
-                               Style="{StaticResource EvBody}"
-                               Text="{Binding Route.Summary}" />
-                        <Label Grid.Row="0"
-                               Grid.RowSpan="2"
-                               Grid.Column="1"
-                               FontAttributes="Bold"
-                               FontSize="26"
-                               Text="{Binding Route.TotalMetersLabel}"
-                               TextColor="{StaticResource EvAccent}"
-                               VerticalOptions="Center" />
-                    </Grid>
-                </Border>
+                <Label Grid.Row="1"
+                       Grid.Column="1"
+                       Margin="0,8,0,0"
+                       Style="{StaticResource EvBody}"
+                       Text="{Binding CurrentInstruction}"
+                       VerticalOptions="Center" />
 
-                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Route.Steps}" Spacing="8">
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="models:RouteStep">
-                            <Grid ColumnDefinitions="28,*" ColumnSpacing="10">
-                                <Border Grid.Column="0"
-                                        BackgroundColor="{StaticResource EvAccentDeep}"
-                                        HeightRequest="26"
-                                        Stroke="Transparent"
-                                        VerticalOptions="Start"
-                                        WidthRequest="26">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="13" />
-                                    </Border.StrokeShape>
-                                    <Label FontSize="12"
-                                           HorizontalOptions="Center"
-                                           Text="{Binding Ordinal}"
-                                           TextColor="{StaticResource EvTextPrimary}"
-                                           VerticalOptions="Center" />
-                                </Border>
-                                <Label Grid.Column="1"
-                                       Style="{StaticResource EvBody}"
-                                       Text="{Binding Instruction}"
-                                       VerticalOptions="Center" />
-                            </Grid>
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </VerticalStackLayout>
+                <Button Grid.Row="1"
+                        Grid.Column="2"
+                        Command="{Binding NextStepCommand}"
+                        HeightRequest="42"
+                        Style="{StaticResource EvGhostButton}"
+                        Text="›"
+                        WidthRequest="52" />
+            </Grid>
+        </Border>
 
-            </VerticalStackLayout>
-        </ScrollView>
+        <Border Grid.Row="4" IsVisible="{Binding HasRoute}" Style="{StaticResource EvCard}">
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                <Label Grid.Row="0"
+                       Grid.Column="0"
+                       Style="{StaticResource EvCaps}"
+                       Text="{Binding Route.Headline}" />
+                <Label Grid.Row="1"
+                       Grid.Column="0"
+                       Margin="0,4,0,0"
+                       Style="{StaticResource EvBody}"
+                       Text="{Binding Route.Summary}" />
+                <Label Grid.Row="0"
+                       Grid.RowSpan="2"
+                       Grid.Column="1"
+                       FontAttributes="Bold"
+                       FontSize="26"
+                       Text="{Binding Route.TotalMetersLabel}"
+                       TextColor="{StaticResource EvAccent}"
+                       VerticalOptions="Center" />
+            </Grid>
+        </Border>
 
-        <Grid Grid.Row="3"
-              Margin="0,14,0,0"
-              ColumnDefinitions="*,*"
-              ColumnSpacing="10">
-            <Button Grid.Column="0"
-                    Command="{Binding ReportDangerCommand}"
-                    Style="{StaticResource EvDangerButton}"
-                    Text="Zgłoś zagrożenie" />
-            <Button Grid.Column="1"
-                    Command="{Binding GuideCommand}"
-                    Style="{StaticResource EvPrimaryButton}"
-                    Text="Prowadź" />
-        </Grid>
+        <Button Grid.Row="5"
+                Command="{Binding ReportDangerCommand}"
+                Style="{StaticResource EvDangerButton}"
+                Text="Zgłoś zagrożenie" />
 
     </Grid>
 

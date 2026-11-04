@@ -92,6 +92,20 @@ public sealed class ApiEvacuationDataSource(HttpClient http, ApiOptions options)
         return new DangerAlertResult(alert, ToRoute(recalculated, "Nowa trasa", previous: null));
     }
 
+    public async Task<Guid?> FindRoomAtAsync(
+        Guid floorPlanId,
+        int x,
+        int y,
+        CancellationToken ct = default)
+    {
+        var hit = await GetAsync<RoomAtDto>($"api/floors/{floorPlanId}/room-at?x={x}&y={y}", ct);
+
+        return hit.RoomId;
+    }
+
+    public string GetPlanImageUrl(Guid floorPlanId) =>
+        $"{options.BaseAddress.TrimEnd('/')}/api/floors/{floorPlanId}/image";
+
     private static RoomSummary ToRoom(RoomSummaryDto dto) => new(
         dto.Id,
         dto.RegionId,
@@ -101,14 +115,22 @@ public sealed class ApiEvacuationDataSource(HttpClient http, ApiOptions options)
         dto.Detail,
         dto.IsExit,
         dto.IsStaircase,
-        dto.HasActiveDanger);
+        dto.HasActiveDanger,
+        dto.CentroidX,
+        dto.CentroidY);
 
     private static EvacuationRoute ToRoute(RouteDto dto, string headline, double? previous)
     {
         var seconds = (int)Math.Round(dto.TotalMeters / WalkingSpeed);
 
         var steps = dto.Steps
-            .Select(step => new RouteStep(step.Ordinal, step.Label))
+            .Select(step => new RouteStep(
+                step.Ordinal,
+                step.Label,
+                step.RoomId,
+                step.RegionId,
+                step.CentroidX,
+                step.CentroidY))
             .ToList();
 
         var summary = $"{dto.ExitLabel} · {dto.SegmentCount} {Odcinki(dto.SegmentCount)} · ok. {seconds} s marszu";

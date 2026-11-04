@@ -57,3 +57,5 @@ internal sealed record DangerZoneDto(
     string Kind,
     DateTimeOffset ReportedAt,
     string Status);
+
+internal sealed record RoomAtDto(Guid? RoomId, int? RegionId);

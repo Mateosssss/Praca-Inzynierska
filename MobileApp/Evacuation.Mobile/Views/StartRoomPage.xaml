@@ -3,6 +3,7 @@
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Evacuation.Mobile.Models"
+             xmlns:views="clr-namespace:Evacuation.Mobile.Views"
              xmlns:vm="clr-namespace:Evacuation.Mobile.ViewModels"
              x:DataType="vm:StartRoomViewModel"
              Style="{StaticResource EvPage}">
@@ -30,13 +31,16 @@
               ColumnDefinitions="*,*"
               ColumnSpacing="8">
             <Button Grid.Column="0"
-                    BackgroundColor="{StaticResource EvAccentDeep}"
+                    BackgroundColor="{Binding ShowList, Converter={StaticResource TabBackground}}"
+                    Command="{Binding ShowRoomListCommand}"
                     HeightRequest="40"
                     Style="{StaticResource EvGhostButton}"
                     Text="Lista sal" />
             <Button Grid.Column="1"
+                    BackgroundColor="{Binding ShowPlan, Converter={StaticResource TabBackground}}"
+                    Command="{Binding ShowRoomPlanCommand}"
                     HeightRequest="40"
-                    IsEnabled="False"
+                    IsEnabled="{Binding HasPlanImage}"
                     Style="{StaticResource EvGhostButton}"
                     Text="Wskaż na rzucie" />
         </Grid>
@@ -49,6 +53,7 @@
 
         <CollectionView Grid.Row="4"
                         Margin="0,14,0,0"
+                        IsVisible="{Binding ShowList}"
                         IsGrouped="True"
                         ItemsSource="{Binding Groups}"
                         SelectedItem="{Binding SelectedRoom}"
@@ -87,6 +92,16 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
+        <Border Grid.Row="4"
+                Margin="0,14,0,0"
+                IsVisible="{Binding ShowPlan}"
+                Padding="0"
+                Style="{StaticResource EvCard}">
+            <views:PlanMapView PlanImageUrl="{Binding PlanImageUrl}"
+                               PointTappedCommand="{Binding PointTappedCommand}"
+                               Steps="{Binding SelectionMarker}" />
+        </Border>
 
         <Button Grid.Row="5"
                 Margin="0,12,0,0"

@@ -84,6 +84,13 @@ public sealed class MockEvacuationDataSource : IEvacuationDataSource
             ]);
     }
 
+    /// <summary>Makieta nie ma rzutu, więc wskazywanie na planie zawsze trafia w pustkę.</summary>
+    public Task<Guid?> FindRoomAtAsync(Guid floorPlanId, int x, int y, CancellationToken ct = default) =>
+        Task.FromResult<Guid?>(null);
+
+    /// <summary>Brak backendu oznacza brak obrazu — mapa pokaże wtedy zastępczą informację.</summary>
+    public string? GetPlanImageUrl(Guid floorPlanId) => null;
+
     public async Task<DangerAlertResult> ReportDangerZoneAsync(
         Guid floorPlanId,
         Guid roomId,

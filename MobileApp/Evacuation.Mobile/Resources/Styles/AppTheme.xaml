@@ -9,6 +9,8 @@
                     xmlns:conv="clr-namespace:Evacuation.Mobile.Converters">
 
     <conv:BoolToOpacityConverter x:Key="BoolToOpacity" />
+    <conv:InverseBoolConverter x:Key="Not" />
+    <conv:TabBackgroundConverter x:Key="TabBackground" />
 
     <!--  Tła  -->
     <Color x:Key="EvBackground">#201F1D</Color>

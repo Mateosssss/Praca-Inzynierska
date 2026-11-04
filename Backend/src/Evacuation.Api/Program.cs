@@ -19,6 +19,11 @@ builder.Services.AddSingleton<IPlanImageDecoder, PngPlanImageDecoder>();
 builder.Services.AddScoped<FloorPlanImporter>();
 builder.Services.AddScoped<FloorGraphLoader>();
 
+// Mapa etykiet bywa kosztowna w odtworzeniu, więc żyje w pamięci podręcznej.
+// SizeLimit wymusza, by każdy wpis deklarował rozmiar — bez tego cache rósłby bez ograniczeń.
+builder.Services.AddMemoryCache(options => options.SizeLimit = 16);
+builder.Services.AddScoped<FloorPlanLabelMapCache>();
+
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 

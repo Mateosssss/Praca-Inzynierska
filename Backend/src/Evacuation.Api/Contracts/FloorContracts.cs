@@ -51,3 +51,9 @@ public sealed record RoomSummaryResponse(
     bool IsExit,
     bool IsStaircase,
     bool HasActiveDanger);
+
+/// <summary>
+/// Pomieszczenie pod wskazanym pikselem. Oba pola są puste, gdy trafiono w ścianę,
+/// drzwi albo poza rzut.
+/// </summary>
+public sealed record RoomAtResponse(Guid? RoomId, int? RegionId);

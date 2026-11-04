@@ -12,7 +12,9 @@ public sealed record RoomSummary(
     string Detail,
     bool IsExit,
     bool IsStaircase,
-    bool HasActiveDanger)
+    bool HasActiveDanger,
+    int CentroidX = 0,
+    int CentroidY = 0)
 {
     /// <summary>
     /// Etykieta w dopełniaczu, do zdań typu „Wyznacz trasę z sali 118”.
