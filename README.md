@@ -76,10 +76,17 @@ Orkiestracja środowiska deweloperskiego: **.NET Aspire**. AppHost uruchamia kon
 | Orkiestracja | .NET Aspire |
 | Baza danych | PostgreSQL |
 | ORM | Entity Framework Core (Code First) |
-| Przetwarzanie obrazu | własna implementacja w C# |
+| Przetwarzanie obrazu | własna implementacja w C# (SkiaSharp tylko do dekodowania PNG) |
 | Testy | xUnit |
 
-Pipeline przetwarzania obrazu napisany jest od zera, bez bibliotek do wizji komputerowej. Zewnętrzny kod odpowiada wyłącznie za dekodowanie PNG do bitmapy.
+Pipeline przetwarzania obrazu napisany jest od zera, bez bibliotek do wizji komputerowej.
+Zewnętrzny kod odpowiada wyłącznie za rozpakowanie PNG do bitmapy — robi to **SkiaSharp**,
+wybrany ze względu na licencję MIT i brak znanych podatności.
+
+ImageSharp, naturalny kandydat na to miejsce, odpadł po sprawdzeniu: wersja 3.2 blokuje budowanie
+w konfiguracji Release bez wykupionego klucza Six Labors, a ostatnia wersja bez tej bramki (3.1.12)
+ma cztery podatności o wysokiej wadze. Dotyczą komponentu parsującego pliki wgrywane przez
+użytkownika, czyli dokładnie granicy zaufania w tym systemie.
 
 ## Struktura repozytorium
 
@@ -94,7 +101,8 @@ Backend/
     Evacuation.Infrastructure/   EF Core, DbContext, migracje
     Evacuation.Api/              kontrolery, DTO
   tests/
-    Evacuation.Application.Tests/
+    Evacuation.Application.Tests/     algorytmy na planszach pisanych w kodzie
+    Evacuation.Infrastructure.Tests/  dekoder na obrazach generowanych w pamięci
 MobileApp/
   Evacuation.Mobile.slnx
   Evacuation.Mobile/             aplikacja MAUI
